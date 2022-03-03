@@ -10,7 +10,7 @@
 https://deeplify.dev/back-end/spring/oauth2-social-login
 ``` 
 
-## 추가
+## 추가 내용
 
 ### kakao 인증 추가
 - Naver와 유사
