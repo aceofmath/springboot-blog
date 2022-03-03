@@ -83,5 +83,5 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id # 회원정보를 json의 id 키값으로 리턴해줌.   
 cos:
-  cos: cos1234
+  key: cos1234
         
