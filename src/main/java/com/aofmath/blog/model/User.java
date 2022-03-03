@@ -4,14 +4,13 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,25 +27,33 @@ public class User {
 	
 	@Id //Primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 프로젝트에서 연결된 DB의 넘버링 전략을 따라간다.
+	@ApiModelProperty(name = "id", example = "1")
 	private int id; // 시퀀스, auto_increment
 	 
-	@Column(nullable = false, length = 100, unique = true) 
+	@Column(nullable = false, length = 100, unique = true)
+	@ApiModelProperty(name = "username", example = "username")
 	private String username; // 아이디
 	
 	@Column(length = 100) // 123456 => 해쉬 (비밀번호 암호화)
+	@ApiModelProperty(name = "password", example = "password")
 	private String password;
 	
 	@Column(nullable = false, length = 50)
+	@ApiModelProperty(name = "email", example = "email")
 	private String email; // myEmail, my_email
 
 	// @ColumnDefault("user")
 	// DB는 RoleType이라는 게 없다.
+	@ApiModelProperty(name = "role", example = "ROLE_USER")
 	private String role; // Enum을 쓰는게 좋다. // ADMIN, USER
+	@ApiModelProperty(name = "provider", hidden = true)
 	private String provider;
+	@ApiModelProperty(name = "providerId", hidden = true)
 	private String providerId;
 	
 	// 내가 직접 시간을 넣으려면 Timestamp.valueOf(LocalDateTime.now())
 	@CreationTimestamp
+	@ApiModelProperty(name = "createDate", hidden = true)
 	private Timestamp createDate;
 	
 }

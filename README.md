@@ -15,3 +15,7 @@ https://deeplify.dev/back-end/spring/oauth2-social-login
 - Naver와 유사
 - registration, provider 추가
 - 변수처리
+
+### Swagger 추가
+- application 수정(spring.mvc.hiddenmethod.filter.enabled = true)
+- spring-boot-starter-parent 다운(2.6.4 → 2.4.2)
