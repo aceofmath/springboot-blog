@@ -41,7 +41,16 @@ public class User {
 	@Column(nullable = false, length = 50)
 	@ApiModelProperty(name = "email", example = "email")
 	private String email; // myEmail, my_email
-
+	
+	@ApiModelProperty(name = "postcode", example = "postcode")
+	private String postcode; //postcode
+	
+	@ApiModelProperty(name = "address", example = "address")
+	private String address; //address
+	
+	@ApiModelProperty(name = "detailAddress", example = "detailAddress")
+	private String detailAddress; //detailAddress
+	
 	// @ColumnDefault("user")
 	// DB는 RoleType이라는 게 없다.
 	@ApiModelProperty(name = "role", example = "ROLE_USER")

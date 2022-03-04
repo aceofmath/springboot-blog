@@ -20,6 +20,16 @@ let index = {
 					content: $("#content").val()
 			};
 			
+			if($.trim(data.title) == ''){
+				alert('제목을 입력하세요.');
+				return;
+			}
+			
+			if($.trim(data.content) == ''){
+				alert('내용을 입력하세요.');
+				return;
+			}
+				
 			$.ajax({ 
 				type: "POST",
 				url: "/api/board",
@@ -56,6 +66,16 @@ let index = {
 					title: $("#title").val(),
 					content: $("#content").val()
 			};
+			
+			if($.trim(data.title) == ''){
+				alert('제목을 입력하세요.');
+				return;
+			}
+			
+			if($.trim(data.content) == ''){
+				alert('내용을 입력하세요.');
+				return;
+			}
 
 			$.ajax({ 
 				type: "PUT",
@@ -77,6 +97,11 @@ let index = {
 					boardId: $("#boardId").val(),
 					content: $("#reply-content").val()
 			};
+			
+			if($.trim(data.content) == ''){
+				alert('내용을 입력하세요.');
+				return;
+			}
 			
 			$.ajax({ 
 				type: "POST",

@@ -16,10 +16,19 @@
 </div>
 
 <script>
-  $('.summernote').summernote({
-    tabsize: 2,
-    height: 300
-  });
+$('.summernote').summernote({
+	tabsize: 2,
+	height: 300
+});
+
+function validateEmail(sEmail){
+	var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+	if (filter.test(sEmail)) {
+		return true;
+	}else {
+		return false;
+	}
+}
 </script>
 <script src="/js/board.js"></script>
 <%@ include file="../layout/footer.jsp"%>
