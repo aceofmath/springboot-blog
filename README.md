@@ -20,3 +20,7 @@ https://deeplify.dev/back-end/spring/oauth2-social-login
 ### Swagger 추가
 - application 수정(spring.mvc.hiddenmethod.filter.enabled = true)
 - spring-boot-starter-parent 다운(2.6.4 → 2.4.2)
+
+
+### 공공데이터포털 API 추가
+- Data* 추가
