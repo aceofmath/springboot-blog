@@ -14,7 +14,8 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aofmath.blog.vo.DataVO;
+import com.aofmath.blog.vo.LandFcstVO;
+import com.aofmath.blog.vo.RestDeVO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,22 +27,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataService {
 	
-	private static String URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
+	//1.특일 정보제공
+	private static String REST_DE_URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
 	
-	private static String SERVICE_KEY = "";
+	//2.육상예보조회
+	private static String LAND_FCST_URL = "http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst";
+	
+	private static String SERVICE_KEY = "4x6L44%2FdIc6Yu6RlJNVIO31KRHjZjuv4f5%2FokcbiCbqfNSUrL98tRmKOry%2FvAZCk53LR%2FHLcbMEbhEF5ccpByw%3D%3D";
 	
 	@SuppressWarnings("null")
 	@Transactional
-	public List<DataVO> restDeInfo(String yyyy)  throws Exception { // title, content
-		
-		String result = "";
+	public List<RestDeVO> restDeInfo(String yyyy)  throws Exception { // title, content
 		
 		//////////////apis.data.go.kr http 통신 /////////////////
 		////////////// 공공데이터 포럼 api start /////////////////
 		// api 키 갱신은 2년 주기로 되며 (https://www.data.go.kr/) 에서 발급 받을 수 있음.
 		// 서비스명 : 특일 정보제공 서비스 > 일반 인증키 재발급 받을 것
 		// id와 pw는 문의
-		StringBuilder urlBuilder = new StringBuilder(URL); /* URL */
+		StringBuilder urlBuilder = new StringBuilder(REST_DE_URL); /* URL */
 		urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8") + "=" + SERVICE_KEY); /* Service Key */
 		urlBuilder.append("&" + URLEncoder.encode("solYear", "UTF-8") + "=" + URLEncoder.encode(yyyy, "UTF-8")); /* 연 */
 		urlBuilder.append("&" + URLEncoder.encode("_type", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /* return 타입 json */
@@ -90,9 +93,9 @@ public class DataService {
 	    
 	    log.info("restDeInfo : 공공데이터포털 휴일>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>jsonArray:{}", jsonArray.toString());
 	    
-	    List<DataVO> list = new ArrayList<DataVO>();
+	    List<RestDeVO> list = new ArrayList<RestDeVO>();
 	    Gson gson = new Gson();
-	    list = gson.fromJson(jsonArray.toString(), new TypeToken<List<DataVO>>() {}.getType());
+	    list = gson.fromJson(jsonArray.toString(), new TypeToken<List<RestDeVO>>() {}.getType());
 	    
 //	    DataVO dataVO = null;
 //	    List<DataVO> list = new ArrayList<DataVO>();
@@ -109,4 +112,69 @@ public class DataService {
 
 		return list;
 	}
+	
+	@Transactional
+	public List<LandFcstVO> landFcst(String regId)  throws Exception { // title, content
+		
+		//////////////apis.data.go.kr http 통신 /////////////////
+		////////////// 공공데이터 포럼 api start /////////////////
+		// api 키 갱신은 2년 주기로 되며 (https://www.data.go.kr/) 에서 발급 받을 수 있음.
+		// 서비스명 : 육상예보조회 서비스 > 일반 인증키 재발급 받을 것
+		// id와 pw는 문의
+		StringBuilder urlBuilder = new StringBuilder(LAND_FCST_URL); /* URL */
+		urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + SERVICE_KEY); /* Service Key */
+		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+		urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
+		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /* return 타입 JSON */
+		urlBuilder.append("&" + URLEncoder.encode("regId", "UTF-8") + "=" + URLEncoder.encode(regId, "UTF-8")); /*  */
+
+		URL url = new URL(urlBuilder.toString());
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Content-type", "application/json");
+
+		BufferedReader rd;
+		if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		} else {
+			rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+		}
+
+		StringBuilder sb = new StringBuilder();
+		String line;
+
+		while ((line = rd.readLine()) != null) {
+			sb.append(line);
+		}
+
+		rd.close();
+		conn.disconnect();
+		////////////// apis.data.go.kr http 통신 /////////////////
+		////////////// 공공데이터 포럼 api end ///////////////////
+		
+		/////////////	json 데이터 가공 start	////////////////////
+	    JSONParser parser = new JSONParser();
+	    Object obj = null;
+	    
+	    obj = parser.parse(sb.toString());
+	    
+	    log.info("landFcst : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>obj.toString():{}", obj.toString());
+	    
+	    // json 데이터 response > body > items > item(list) 형식으로 되어있음
+	    JSONObject jsonObj = (JSONObject) obj;
+	    JSONObject jsonObj2 = (JSONObject) jsonObj.get("response");
+	    JSONObject jsonObj3 = (JSONObject) jsonObj2.get("body");
+	    JSONObject jsonObj4 = (JSONObject) jsonObj3.get("items");
+	    JSONArray jsonArray = (JSONArray) jsonObj4.get("item");
+	    
+	    List<LandFcstVO> list = new ArrayList<LandFcstVO>();
+	    Gson gson = new Gson();
+	    list = gson.fromJson(jsonArray.toString(), new TypeToken<List<LandFcstVO>>() {}.getType());
+		
+		log.info("landfcst : 육상예보조회>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>list:{}", list);
+
+		return list;
+	}
+	
 }

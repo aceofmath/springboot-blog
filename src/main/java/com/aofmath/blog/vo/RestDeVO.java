@@ -3,7 +3,7 @@ package com.aofmath.blog.vo;
 import lombok.Data;
 
 @Data
-public class DataVO {
+public class RestDeVO {
 
 	private String locdate		= "";		//날짜
 	private String seq		= "";			//순번
